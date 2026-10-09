@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "customer-subscription-prediction"
+version = "0.1.0"
+description = "A learning project for predicting customer subscriptions with scikit-learn"
+requires-python = ">=3.11"
+dependencies = [
+  "numpy>=1.26,<3",
+  "pandas>=2.2,<3",
+  "scikit-learn>=1.5,<2",
+  "joblib>=1.4,<2",
+]
+
+[project.scripts]
+subscription-train = "subscription_prediction.train:main"
+subscription-predict = "subscription_prediction.predict:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

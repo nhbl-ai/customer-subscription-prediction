@@ -1,0 +1,17 @@
+{
+  "data_path": "data/raw/bank-additional-full.csv",
+  "separator": ";",
+  "target": "y",
+  "positive_label": "yes",
+  "negative_label": "no",
+  "drop_columns": ["duration"],
+  "split_strategy": "temporal",
+  "validation_fraction": 0.15,
+  "test_fraction": 0.15,
+  "random_state": 42,
+  "artifact_dir": "artifacts",
+  "report_dir": "reports",
+  "contact_fraction": 0.2,
+  "random_forest_estimators": 150,
+  "random_forest_max_depth": 12
+}
