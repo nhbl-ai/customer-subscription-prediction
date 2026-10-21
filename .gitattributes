@@ -5,5 +5,5 @@
 *.yml text eol=lf
 *.ipynb text eol=lf
 # Preserve exact snapshot bytes so manifest hashes survive checkout on any OS.
-docs/results/** -text
+docs/results/** -text whitespace=cr-at-eol
 *.png binary
