@@ -1,112 +1,165 @@
-# Predicting Customer Service Subscriptions
+# Customer Subscription Prediction
 
-Khung dự án Machine Learning dự đoán khách hàng có đăng ký dịch vụ hay không,
-sử dụng Python và scikit-learn. Bài toán cụ thể ban đầu là đăng ký tiền gửi có kỳ hạn
-trong bộ dữ liệu **UCI Bank Marketing**.
+An end-to-end machine learning portfolio project that ranks customers for a bank term-deposit campaign using **Python, pandas and scikit-learn**. It covers data exploration, chronological evaluation, model tuning, calibration diagnostics, illustrative contact costs and batch CSV inference.
 
-**Đầu vào:** thông tin khách hàng và lịch sử chiến dịch, ở thời điểm đã lập lịch nhưng chưa gọi.
-**Đầu ra:** điểm dự đoán đăng ký, nhãn yes/no và danh sách ưu tiên liên hệ.
+**Main result:** tuned Logistic Regression achieved **0.2077 validation average precision** and **1.983× lift in the top 20%**. Historical test lift fell to **1.168×** as the positive rate changed sharply. This project documents that limitation alongside the results.
 
-## Cấu trúc
+[Portfolio report (Tiếng Việt)](docs/portfolio_report.md) · [Experiment findings](docs/milestone3_findings.md) · [Model card](docs/model_card.md) · [Changelog](CHANGELOG.md)
 
-```text
-customer-subscription-prediction/
-├── configs/default.json         # Đường dẫn, chia dữ liệu, tham số
-├── data/
-│   ├── raw/                     # CSV gốc từ UCI
-│   ├── processed/               # Dành cho các bước mở rộng
-│   └── examples/customers.csv   # Dữ liệu giả lập để thử dự đoán
-├── src/subscription_prediction/
-│   ├── data.py                  # Đọc dữ liệu, kiểm tra nhãn, chia tập
-│   ├── modeling.py              # Pipeline và ba mô hình
-│   ├── evaluation.py            # Metric, ngưỡng và ngân sách liên hệ
-│   ├── train.py                 # Huấn luyện và xuất báo cáo
-│   └── predict.py               # Chấm điểm và xếp hạng CSV
-├── tools/download_data.py       # Tải CSV công khai từ UCI
-├── notebooks/README.md          # Gợi ý notebook EDA
-├── docs/project_plan.md         # Các mốc hoàn thiện portfolio
-├── artifacts/                   # model.joblib sau khi train
-├── reports/                     # Báo cáo và CSV kết quả
-├── pyproject.toml
-└── requirements.txt
+## Problem and prediction point
+
+Given customer information and campaign history, produce a subscription score, a yes/no label and a ranked contact list. Scoring assumes the upcoming call has been scheduled but has **not started**.
+
+The dataset is [UCI Bank Marketing](https://archive.ics.uci.edu/dataset/222/bank+marketing), specifically `bank-additional-full.csv`: 41,188 historical records from a Portuguese bank. The target is whether a customer subscribed to a term deposit. The post-call feature `duration` is excluded, leaving 19 inputs. Availability of campaign counters, scheduled contact fields and economic releases remains conditional; see the [model card](docs/model_card.md).
+
+## Measured results
+
+All model decisions use train/validation. The test period had already been inspected during baseline/EDA, so it is **not an untouched independent holdout**. No confidence intervals were estimated.
+
+| Model / period | Average precision | Precision, top 20% | Lift, top 20% |
+| --- | ---: | ---: | ---: |
+| Dummy / validation | 0.1065 | 12.14%¹ | 1.139×¹ |
+| Baseline Logistic Regression / validation | 0.1902 | 20.95% | 1.967× |
+| Baseline Random Forest / validation | 0.1718 | 17.23% | 1.618× |
+| **Tuned Logistic Regression / validation** | **0.2077** | **21.12%** | **1.983×** |
+| Frozen tuned Logistic Regression / historical test | 0.4508 | 44.90% | 1.168× |
+
+¹ Dummy scores are tied; stable row-order tie breaking explains its apparent lift. It has no ranking skill. Random selection has expected lift 1.
+
+The selected pipeline uses `C=0.1`, `class_weight=None` and raw scores. Validation AP improved by 0.0175 over baseline Logistic Regression; precision at the contact budget improved by only 0.16 percentage points. A temporal sigmoid ensemble had worse validation Brier loss, so raw scores were retained.
+
+The positive rate is **5.57% train → 10.65% validation → 38.45% test**. Higher test AP is not evidence of improved generalization. At the fixed threshold `0.153142`, test contact volume reached 49.72%; a threshold selected with a validation budget does not enforce that budget on future batches. Scores are not established as reliable future probabilities; cost-based utility is illustrative, not measured profit.
+
+![Validation precision-recall curves](docs/results/precision_recall.png)
+
+Full precision values and provenance are committed in [docs/results](docs/results/README.md). Raw data, serialized models and row-level real-data predictions are regenerated locally.
+
+## Quickstart
+
+Requires **Python 3.11+** and Internet access to install dependencies and download UCI data. The recorded experiment environment used Python 3.13.9 on Windows. Run commands from the repository root.
+
+```bash
+git clone https://github.com/nhbl-ai/customer-subscription-prediction.git
+cd customer-subscription-prediction
+python -m venv .venv
 ```
 
-## Bắt đầu trên Windows / PowerShell
-
-Yêu cầu Python 3.11 trở lên. Chạy tại thư mục dự án:
+Windows / PowerShell (no activation or execution-policy change needed):
 
 ```powershell
-Set-Location 'D:\Personal projects\customer-subscription-prediction'
-python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
 .\.venv\Scripts\python.exe tools/download_data.py
 .\.venv\Scripts\python.exe -m subscription_prediction.train --config configs/default.json
-.\.venv\Scripts\python.exe -m subscription_prediction.predict --input data/examples/customers.csv --output reports/customer_priorities.csv
+.\.venv\Scripts\python.exe -m subscription_prediction.predict --input data/examples/customers.csv --output reports/customer_priorities.csv --top-k 2
 ```
 
-Dùng trực tiếp Python trong .venv nên không cần thay đổi PowerShell execution policy.
-Nếu máy chỉ nhận lệnh `py`, dùng `py -3 -m venv .venv` ở bước tạo môi trường.
-Khung không kèm dữ liệu thật hoặc mô hình đã huấn luyện. Tải và cài thư viện cần Internet.
+macOS / Linux:
 
-Nếu không tải được bằng script: mở https://archive.ics.uci.edu/dataset/222/bank+marketing,
-tải và giải nén **bank-additional-full.csv** vào `data/raw/`.
-Không dùng nhầm `bank-full.csv`: hai phiên bản có các cột khác nhau.
-Dữ liệu ví dụ là giả lập, không dùng để huấn luyện hoặc báo cáo chất lượng.
+```bash
+.venv/bin/python -m pip install -r requirements.txt
+.venv/bin/python tools/download_data.py
+.venv/bin/python -m subscription_prediction.train --config configs/default.json
+.venv/bin/python -m subscription_prediction.predict --input data/examples/customers.csv --output reports/customer_priorities.csv --top-k 2
+```
 
-## Huấn luyện làm gì?
+This is the batch CLI demo. The three example customers are **synthetic**, used only to demonstrate inference. The baseline command trains three models and writes a model artifact and reports; it does not reproduce the tuned results above. The project has no hosted app or API.
 
-1. Đọc CSV dấu `;`, ánh xạ y=no thành 0 và y=yes thành 1.
-2. Loại `duration`: chỉ biết độ dài cuộc gọi khi cuộc gọi kết thúc.
-3. Chia 70% train, 15% validation, 15% test theo thứ tự dòng. UCI mô tả phiên bản
-   bank-additional-full.csv được sắp theo thời gian; pipeline không tự suy ra/sắp xếp ngày.
-4. Chỉ fit imputer, scaler, encoder và estimator trên train trong Pipeline.
-5. So sánh Dummy, Logistic Regression và Random Forest bằng **average precision trên validation**.
-6. Chọn ngưỡng tối đa F1 trên validation cho từng mô hình.
-7. Chấm mô hình đã chọn trên test và lưu báo cáo. Không refit trên validation trong khung này.
+If the downloader cannot reach UCI, download the archive from the dataset page and extract **`bank-additional-full.csv`** to `data/raw/`. `bank-full.csv` has a different schema.
 
-Với CSV khác không có thứ tự thời gian, cân nhắc `split_strategy: stratified` trong config.
-Nếu nhiều dòng thuộc cùng khách hàng, cần bổ sung chia theo customer ID để tránh lọt thông tin;
-khung hiện tại không suy ra được danh tính khách hàng từ dataset.
+## Reproduce the full experiment
 
-## Đọc kết quả
-
-- `artifacts/model.joblib`: pipeline, tên mô hình, ngưỡng, cột đầu vào và phiên bản sklearn.
-- `reports/validation_comparison.csv`: so sánh các mô hình trên validation.
-- `reports/metrics.json`: cấu hình, kích thước tập, phiên bản và metric validation/test.
-- `reports/test_predictions.csv`: nhãn thật và dự đoán cho test.
-- `reports/customer_priorities.csv`: xếp hạng khách hàng theo subscription_score giảm dần.
-
-`source_row` là vị trí dòng dữ liệu tính từ 0, không phải customer ID.
-Confusion matrix có thứ tự [[TN, FP], [FN, TP]]. Average precision tóm tắt đường precision–recall.
-`contact_fraction=0.2` đo precision và lift nếu ưu tiên liên hệ 20% khách hàng có điểm cao nhất.
-Baseline ngẫu nhiên có precision kỳ vọng bằng tỷ lệ yes của tập đang đánh giá.
-Điểm bằng nhau không có thứ tự ưu tiên có ý nghĩa; đặc biệt chú ý kết quả xếp hạng của Dummy.
-
-## Dự đoán dữ liệu của bạn
-
-CSV đầu vào phải có tất cả cột đã dùng lúc train. Có thể thêm customer_id; cột này
-sẽ được giữ trong kết quả, nhưng không dùng cho mô hình nếu không có lúc train.
-Không cần cột y hoặc duration. CSV kết quả dùng dấu phẩy.
+After downloading data, install the experiment and EDA extras. The following commands use PowerShell; on macOS/Linux replace `.\.venv\Scripts\python.exe` with `.venv/bin/python`.
 
 ```powershell
-.\.venv\Scripts\python.exe -m subscription_prediction.predict --input data/examples/customers.csv --top-k 2
+.\.venv\Scripts\python.exe -m pip install -e ".[experiments,eda]"
+.\.venv\Scripts\python.exe tools/run_eda.py
+.\.venv\Scripts\python.exe -m subscription_prediction.experiments --config configs/milestone3.json
+# After reviewing and freezing validation decisions:
+.\.venv\Scripts\python.exe -m subscription_prediction.experiments --config configs/milestone3.json --evaluate-test
+.\.venv\Scripts\python.exe -m subscription_prediction.predict --model artifacts/milestone3/model.joblib --input data/examples/customers.csv --output reports/milestone3/customer_priorities.csv
+.\.venv\Scripts\python.exe tools/export_portfolio.py
 ```
 
-subscription_score là điểm từ predict_proba; các mô hình dùng class_weight chưa được
-hiệu chỉnh xác suất nên không diễn giải trực tiếp thành tỷ lệ đăng ký ngoài thực tế.
-Chỉ nạp file joblib có nguồn đáng tin vì cơ chế pickle có thể thực thi mã.
+The full experiment includes Random Forest grid searches and takes longer than the baseline. Export verifies the frozen data/config/model/report hashes and test-selection identity, then writes aggregate tables, figures and portable JSON to `docs/results/`. It does not refit or select models. Running EDA updates the executed notebook and findings.
 
-## Các bước tiếp theo
+For the recorded dependency versions, use [requirements-lock.txt](requirements-lock.txt) with Python 3.13 on Windows, then install the project with `python -m pip install -e . --no-deps`. This file is a version snapshot from `pip freeze`, not a cross-platform or hash-locked resolver output. Other supported Python versions resolve dependencies from `pyproject.toml`; small numerical differences may occur.
 
-Đọc `docs/project_plan.md`: thêm EDA, TimeSeriesSplit, chọn siêu tham số, phân tích lỗi,
-giải thích mô hình, calibration và demo. Khung hiện tại cung cấp baseline chạy được;
-chưa có tuning, biểu đồ, notebook thực thi hoặc ứng dụng web.
+See [the experiment guide](docs/milestone3_guide.md) for feature ablations, cost scenarios and artifact integrity checks.
 
-## Nguồn
+## Evaluation design
 
-- Dữ liệu: Moro, S., Rita, P., & Cortez, P. (2014), Bank Marketing,
-  UCI Machine Learning Repository, https://doi.org/10.24432/C5K306 — CC BY 4.0.
-- scikit-learn: https://scikit-learn.org/stable/getting_started.html
+```mermaid
+flowchart LR
+    A[Chronologically ordered CSV] --> B[Train 70%]
+    A --> C[Validation 15%]
+    A --> D[Historical test 15%]
+    B --> E[3 expanding CV folds]
+    E --> F[Refit candidates on train]
+    F --> C
+    C --> G[Select model, score form and threshold]
+    G --> H[Save model and SHA-256 provenance]
+    H --> I[Separate frozen-model test command]
+    D --> I
+```
 
-Đây là dự án học tập trên dữ liệu chiến dịch lịch sử tại Bồ Đào Nha. Kết quả không tự
-chứng minh hiệu quả trên thị trường hoặc chiến dịch mới; cần đánh giá lại trước khi áp dụng.
+- Outer split: 28,831 train / 6,178 validation / 6,179 test rows, preserving the source order described by UCI. Row blocks are not equal calendar intervals.
+- Preprocessing: numeric median imputation and scaling; categorical imputation and one-hot encoding with unseen-category handling. All fitting occurs inside each training fold.
+- Comparison: Dummy, Logistic Regression and Random Forest; 3 feature sets; 27 grid candidates × 3 folds. Models are selected using validation average precision, rather than accuracy under class imbalance.
+- Decisions: compare raw scores and temporal sigmoid calibration using validation Brier loss; choose a threshold using historical-label utility under a 20% validation contact budget. Cost/value ratios 1:5, 1:10 and 1:20 are illustrative.
+- Diagnostics: precision–recall, permutation importance, calibration bins, group errors and contiguous validation blocks. Test scoring loads the frozen artifact and checks hashes; it never refits.
+
+Validation is reused for several decisions, so these are exploratory portfolio estimates. A new future period and verified feature availability are required before operational use.
+
+## CSV inference contract
+
+Input uses `;` by default and must contain all columns in the trained artifact. `y` and `duration` are unnecessary. Additional fields such as `customer_id` are preserved in output but are not model features unless present during training. Use `--separator ','` for a comma-separated input.
+
+Output is comma-separated and sorted by decreasing `subscription_score`. It adds:
+
+| Column | Meaning |
+| --- | --- |
+| `priority_rank` | Rank within the input batch, starting at 1 |
+| `source_row` | Original zero-based input row position; not a customer ID |
+| `subscription_score` | Positive-class `predict_proba` score |
+| `predicted_subscription` | `yes` / `no` at the saved validation threshold |
+
+`--top-k N` limits the ranked CSV to N rows. It does not change the saved decision threshold; a top-ranked row can still have a `no` label. Equal scores retain source order. Output retains supplied fields, so handle customer data appropriately. Load only trusted `joblib` artifacts because loading pickle-based files can execute code.
+
+## Repository map
+
+```text
+configs/                       Baseline and controlled experiment configurations
+data/examples/customers.csv    Synthetic inference example
+src/subscription_prediction/
+  data.py, modeling.py          Loading, splitting and preprocessing pipelines
+  train.py, predict.py          Baseline training and batch inference
+  tuning.py, experiments.py    Train-only tuning and frozen test evaluation
+  evaluation.py, diagnostics.py Metrics, costs, calibration and error analysis
+  eda.py                       Reusable exploration functions
+notebooks/01_eda.ipynb          Executed exploration notebook
+docs/results/                  Committed aggregate tables, figures and provenance
+docs/                          Findings, model card, portfolio and release notes
+tools/                         UCI download, notebook execution and result export
+tests/                         Behavioral and integration tests with synthetic data
+.github/workflows/ci.yml        Python 3.11/3.13 on Ubuntu and Windows
+```
+
+Generated outputs: baseline → `artifacts/` and `reports/`; controlled experiment → `artifacts/milestone3/` and `reports/milestone3/`; EDA → `reports/eda/`. These runtime directories are Git-ignored.
+
+## Checks and milestone status
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install -e ".[experiments]"
+.\.venv\Scripts\python.exe -m unittest discover -s tests -v
+.\.venv\Scripts\python.exe -m pip check
+```
+
+Tests use synthetic data, including end-to-end baseline training/inference, unseen categories, temporal fold isolation, threshold ties, no-call decisions, frozen test scoring and changed-data rejection. CI is configured to run these checks and build a wheel; its remote status is visible after pushing.
+
+All four planned portfolio milestones are implemented: EDA, reproducible baseline, controlled experiments, and public portfolio packaging. See [the completed plan](docs/project_plan.md). Operational validation, a new independent holdout and a hosted demo remain possible extensions.
+
+## Attribution and license
+
+Project code: [MIT](LICENSE). The source dataset has a separate **CC BY 4.0** license: Moro, S., Rita, P., & Cortez, P. (2014), *Bank Marketing*, UCI Machine Learning Repository, [DOI: 10.24432/C5K306](https://doi.org/10.24432/C5K306). The committed notebook, aggregate tables and figures are analyses of that dataset; transformations include removing `duration`, encoding the target and splitting by row order. The dataset's attribution requirements continue to apply.
+
+This is an educational portfolio on historical campaign data, with no claim of measured business impact or deployment readiness.

@@ -1,12 +1,9 @@
-"""Load data and separate train, validation and test before preprocessing."""
-
 import json
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
-
 
 def read_config(path):
     config_path = Path(path).resolve()
@@ -22,7 +19,6 @@ def read_config(path):
     if not 0 < config["contact_fraction"] <= 1:
         raise ValueError("contact_fraction must be in (0, 1].")
     return config
-
 
 def load_data(config):
     path = config["data_path"]
@@ -41,7 +37,6 @@ def load_data(config):
     if X.empty or len(frame) < 30:
         raise ValueError("Need feature columns and at least 30 rows.")
     return X, y.astype(int)
-
 
 def split_data(X, y, config):
     indices = np.arange(len(X))

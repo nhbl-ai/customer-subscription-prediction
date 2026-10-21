@@ -1,0 +1,4 @@
+name,call_cost,net_value_per_subscription,illustrative,threshold,calls,true_positive_count,utility_proxy,validation_call_budget
+illustrative_1_to_5,1.0,5.0,True,0.1672672817476552,766,192,194.0,1236
+illustrative_1_to_10,1.0,10.0,True,0.1531420788149499,1064,246,1396.0,1236
+illustrative_1_to_20,1.0,20.0,True,0.1469475919318853,1233,261,3987.0,1236

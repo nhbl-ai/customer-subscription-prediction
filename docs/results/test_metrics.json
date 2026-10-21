@@ -1,0 +1,53 @@
+{
+  "selection_sha256": "2a1566585032416b517c6203932743520c23ff4139e12a19fcab689257007ee7",
+  "selected_model": "scheduled_assumptions/logistic_regression",
+  "score_representation": "raw",
+  "test": {
+    "threshold": 0.1531420788149499,
+    "accuracy": 0.5678912445379511,
+    "precision": 0.4521484375,
+    "recall": 0.5845959595959596,
+    "f1": 0.5099118942731278,
+    "average_precision": 0.45081378611097583,
+    "roc_auc": 0.5835559446688818,
+    "confusion_matrix": [
+      [
+        2120,
+        1683
+      ],
+      [
+        987,
+        1389
+      ]
+    ],
+    "contact_count": 1236,
+    "precision_at_contact_budget": 0.44902912621359226,
+    "positive_rate": 0.38452824081566594,
+    "expected_random_precision": 0.38452824081566594,
+    "lift_at_contact_budget": 1.1677403076068127
+  },
+  "calibration": {
+    "brier_score": 0.27496828942965473,
+    "log_loss": 0.8000525975913203,
+    "mean_score": 0.19052881872647318,
+    "positive_rate": 0.38452824081566594
+  },
+  "economic_scenario": {
+    "name": "illustrative_1_to_10",
+    "call_cost": 1.0,
+    "net_value_per_subscription": 10.0,
+    "illustrative": true,
+    "threshold": 0.1531420788149499,
+    "calls": 1064,
+    "true_positive_count": 246,
+    "utility_proxy": 1396.0,
+    "validation_call_budget": 1236
+  },
+  "economics": {
+    "threshold": 0.1531420788149499,
+    "calls": 3072,
+    "true_positive_count": 1389,
+    "utility_proxy": 10818.0
+  },
+  "note": "Previously viewed test; fixed decisions from validation. No test-based reselection."
+}

@@ -1,11 +1,8 @@
-"""Score a CSV with the saved training pipeline and rank customers."""
-
 import argparse
 from pathlib import Path
 
 import joblib
 import pandas as pd
-
 
 def predict(model_path, input_path, output_path, separator=";", top_k=None):
     if top_k is not None and top_k < 1:
@@ -39,7 +36,6 @@ def predict(model_path, input_path, output_path, separator=";", top_k=None):
     result.to_csv(destination, index=False)
     return result
 
-
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--model", default="artifacts/model.joblib")
@@ -53,7 +49,6 @@ def main():
     except (ValueError, FileNotFoundError) as exc:
         parser.exit(1, f"Error: {exc}\n")
     print(f"Saved {len(result)} ranked customers to {args.output}")
-
 
 if __name__ == "__main__":
     main()

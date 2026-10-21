@@ -1,5 +1,3 @@
-"""Preprocessing is fitted on training data within each pipeline."""
-
 from sklearn.compose import ColumnTransformer
 from sklearn.dummy import DummyClassifier
 from sklearn.ensemble import RandomForestClassifier
@@ -7,7 +5,6 @@ from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
-
 
 def build_pipeline(X, estimator):
     numeric = X.select_dtypes(include="number").columns.tolist()
@@ -23,7 +20,6 @@ def build_pipeline(X, estimator):
         ]), categorical),
     ])
     return Pipeline([("preprocess", preprocess), ("classifier", estimator)])
-
 
 def candidate_models(config):
     return {

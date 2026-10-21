@@ -1,0 +1,254 @@
+{
+  "selected_model": "scheduled_assumptions/logistic_regression",
+  "score_representation": "raw",
+  "selection_metric": "raw_validation_average_precision",
+  "calibration_selection_metric": "validation_brier_score",
+  "threshold_rule": "maximum validation utility proxy within contact budget",
+  "primary_economic_scenario": {
+    "name": "illustrative_1_to_10",
+    "call_cost": 1.0,
+    "net_value_per_subscription": 10.0,
+    "illustrative": true,
+    "threshold": 0.1531420788149499,
+    "calls": 1064,
+    "true_positive_count": 246,
+    "utility_proxy": 1396.0,
+    "validation_call_budget": 1236
+  },
+  "threshold": 0.1531420788149499,
+  "f1_reference_threshold": 0.1531420788149499,
+  "validation": {
+    "threshold": 0.1531420788149499,
+    "accuracy": 0.8009064422143088,
+    "precision": 0.231203007518797,
+    "recall": 0.3738601823708207,
+    "f1": 0.2857142857142857,
+    "average_precision": 0.20773237935465383,
+    "roc_auc": 0.6690924959252895,
+    "confusion_matrix": [
+      [
+        4702,
+        818
+      ],
+      [
+        412,
+        246
+      ]
+    ],
+    "contact_count": 1236,
+    "precision_at_contact_budget": 0.2111650485436893,
+    "positive_rate": 0.10650696018128844,
+    "expected_random_precision": 0.10650696018128844,
+    "lift_at_contact_budget": 1.9826408357187122
+  },
+  "calibration": {
+    "raw": {
+      "brier_score": 0.09184991171635168,
+      "log_loss": 0.32380635650911943,
+      "mean_score": 0.1161592197994081,
+      "positive_rate": 0.10650696018128844,
+      "average_precision": 0.20773237935465383
+    },
+    "temporal_sigmoid": {
+      "brier_score": 0.09530705914820133,
+      "log_loss": 0.339910401346416,
+      "mean_score": 0.09912088221871242,
+      "positive_rate": 0.10650696018128844,
+      "average_precision": 0.1028705008572295
+    }
+  },
+  "best_params": {
+    "scheduled_assumptions/dummy": {},
+    "scheduled_assumptions/logistic_regression": {
+      "classifier__C": 0.1,
+      "classifier__class_weight": null
+    },
+    "scheduled_assumptions/random_forest": {
+      "classifier__class_weight": null,
+      "classifier__max_depth": 6
+    },
+    "without_campaign/dummy": {},
+    "without_campaign/logistic_regression": {
+      "classifier__C": 1.0,
+      "classifier__class_weight": "balanced"
+    },
+    "without_campaign/random_forest": {
+      "classifier__class_weight": null,
+      "classifier__max_depth": 12
+    },
+    "customer_history_only/dummy": {},
+    "customer_history_only/logistic_regression": {
+      "classifier__C": 0.1,
+      "classifier__class_weight": null
+    },
+    "customer_history_only/random_forest": {
+      "classifier__class_weight": null,
+      "classifier__max_depth": 6
+    }
+  },
+  "feature_sets": {
+    "scheduled_assumptions": [
+      "age",
+      "job",
+      "marital",
+      "education",
+      "default",
+      "housing",
+      "loan",
+      "contact",
+      "month",
+      "day_of_week",
+      "campaign",
+      "pdays",
+      "previous",
+      "poutcome",
+      "emp.var.rate",
+      "cons.price.idx",
+      "cons.conf.idx",
+      "euribor3m",
+      "nr.employed"
+    ],
+    "without_campaign": [
+      "age",
+      "job",
+      "marital",
+      "education",
+      "default",
+      "housing",
+      "loan",
+      "contact",
+      "month",
+      "day_of_week",
+      "pdays",
+      "previous",
+      "poutcome",
+      "emp.var.rate",
+      "cons.price.idx",
+      "cons.conf.idx",
+      "euribor3m",
+      "nr.employed"
+    ],
+    "customer_history_only": [
+      "age",
+      "job",
+      "marital",
+      "education",
+      "default",
+      "housing",
+      "loan",
+      "pdays",
+      "previous",
+      "poutcome"
+    ]
+  },
+  "split_sizes": {
+    "train": 28831,
+    "validation": 6178,
+    "test": 6179
+  },
+  "train_positive_rate": 0.055703929797787106,
+  "cv_splits": 3,
+  "cv_gap": 0,
+  "test_evaluated": false,
+  "versions": {
+    "python": "3.13.9",
+    "sklearn": "1.9.1",
+    "pandas": "2.3.3",
+    "numpy": "2.5.3"
+  },
+  "config": {
+    "data_path": "data/raw/bank-additional-full.csv",
+    "separator": ";",
+    "target": "y",
+    "positive_label": "yes",
+    "negative_label": "no",
+    "drop_columns": [
+      "duration"
+    ],
+    "split_strategy": "temporal",
+    "validation_fraction": 0.15,
+    "test_fraction": 0.15,
+    "random_state": 42,
+    "artifact_dir": "artifacts/milestone3",
+    "report_dir": "reports/milestone3",
+    "contact_fraction": 0.2,
+    "random_forest_estimators": 150,
+    "random_forest_max_depth": 12,
+    "cv_splits": 3,
+    "cv_gap": 0,
+    "parameter_grids": {
+      "dummy": {},
+      "logistic_regression": {
+        "classifier__C": [
+          0.1,
+          1.0
+        ],
+        "classifier__class_weight": [
+          null,
+          "balanced"
+        ]
+      },
+      "random_forest": {
+        "classifier__max_depth": [
+          6,
+          12
+        ],
+        "classifier__class_weight": [
+          null,
+          "balanced"
+        ]
+      }
+    },
+    "feature_sets": {
+      "scheduled_assumptions": [],
+      "without_campaign": [
+        "campaign"
+      ],
+      "customer_history_only": [
+        "campaign",
+        "contact",
+        "month",
+        "day_of_week",
+        "emp.var.rate",
+        "cons.price.idx",
+        "cons.conf.idx",
+        "euribor3m",
+        "nr.employed"
+      ]
+    },
+    "permutation_repeats": 5,
+    "calibration_bins": 10,
+    "time_blocks": 5,
+    "primary_economic_scenario": "illustrative_1_to_10",
+    "economic_scenarios": [
+      {
+        "name": "illustrative_1_to_5",
+        "call_cost": 1.0,
+        "net_value_per_subscription": 5.0,
+        "illustrative": true
+      },
+      {
+        "name": "illustrative_1_to_10",
+        "call_cost": 1.0,
+        "net_value_per_subscription": 10.0,
+        "illustrative": true
+      },
+      {
+        "name": "illustrative_1_to_20",
+        "call_cost": 1.0,
+        "net_value_per_subscription": 20.0,
+        "illustrative": true
+      }
+    ]
+  },
+  "limitations": [
+    "Test was previously viewed in baseline/EDA; it is not an untouched independent holdout.",
+    "CSV row order represents chronology, not equal-duration periods; customer IDs are absent.",
+    "Feature availability remains conditional; ablation does not verify release-time availability.",
+    "Calibration and model selection reuse validation; these scores are exploratory.",
+    "Temporal sigmoid is an ensemble of fold models, so differences include ensembling.",
+    "Utility is a historical-label proxy, not causal incremental profit; scenario units must match.",
+    "The validation budget constraint is not guaranteed by a fixed threshold on future data.",
+    "Calibration on historical data does not establish valid probabilities under distribution shift."
+  ]
+}

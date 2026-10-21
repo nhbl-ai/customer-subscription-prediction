@@ -1,0 +1,47 @@
+{
+  "data_path": "data/raw/bank-additional-full.csv",
+  "separator": ";",
+  "target": "y",
+  "positive_label": "yes",
+  "negative_label": "no",
+  "drop_columns": ["duration"],
+  "split_strategy": "temporal",
+  "validation_fraction": 0.15,
+  "test_fraction": 0.15,
+  "random_state": 42,
+  "artifact_dir": "artifacts/milestone3",
+  "report_dir": "reports/milestone3",
+  "contact_fraction": 0.2,
+  "random_forest_estimators": 150,
+  "random_forest_max_depth": 12,
+  "cv_splits": 3,
+  "cv_gap": 0,
+  "parameter_grids": {
+    "dummy": {},
+    "logistic_regression": {
+      "classifier__C": [0.1, 1.0],
+      "classifier__class_weight": [null, "balanced"]
+    },
+    "random_forest": {
+      "classifier__max_depth": [6, 12],
+      "classifier__class_weight": [null, "balanced"]
+    }
+  },
+  "feature_sets": {
+    "scheduled_assumptions": [],
+    "without_campaign": ["campaign"],
+    "customer_history_only": [
+      "campaign", "contact", "month", "day_of_week",
+      "emp.var.rate", "cons.price.idx", "cons.conf.idx", "euribor3m", "nr.employed"
+    ]
+  },
+  "permutation_repeats": 5,
+  "calibration_bins": 10,
+  "time_blocks": 5,
+  "primary_economic_scenario": "illustrative_1_to_10",
+  "economic_scenarios": [
+    {"name": "illustrative_1_to_5", "call_cost": 1.0, "net_value_per_subscription": 5.0, "illustrative": true},
+    {"name": "illustrative_1_to_10", "call_cost": 1.0, "net_value_per_subscription": 10.0, "illustrative": true},
+    {"name": "illustrative_1_to_20", "call_cost": 1.0, "net_value_per_subscription": 20.0, "illustrative": true}
+  ]
+}

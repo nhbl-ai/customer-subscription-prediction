@@ -1,0 +1,20 @@
+{
+  "selected_model": "scheduled_assumptions/logistic_regression",
+  "score_representation": "raw",
+  "threshold": 0.1531420788149499,
+  "primary_economic_scenario": {
+    "name": "illustrative_1_to_10",
+    "call_cost": 1.0,
+    "net_value_per_subscription": 10.0,
+    "illustrative": true,
+    "threshold": 0.1531420788149499,
+    "calls": 1064,
+    "true_positive_count": 246,
+    "utility_proxy": 1396.0,
+    "validation_call_budget": 1236
+  },
+  "data_sha256": "74adfc578bf77a7ff4bb1ba4a9f8709d9e3c6907342959c2c8416847e0afb4d8",
+  "config_sha256": "9e4b7ee6b1056e290deed046cd188ed350f73b29d6ad8bc556eaf427874d61d1",
+  "model_sha256": "00301732576024d6c13d172ed25725e02026cb899dabd1c61b51422dcba132f7",
+  "validation_report_sha256": "1fcc4de42bb513b4458b2152b0df12b523f5e5332f180a876c2e3d5c1a07279a"
+}

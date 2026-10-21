@@ -1,5 +1,3 @@
-"""Train candidates; choose model/threshold on validation; evaluate test once."""
-
 import argparse
 import json
 import logging
@@ -14,7 +12,6 @@ from .evaluation import evaluate, select_threshold
 from .modeling import build_pipeline, candidate_models
 
 LOGGER = logging.getLogger(__name__)
-
 
 def train(config_path):
     config = read_config(config_path)
@@ -69,7 +66,6 @@ def train(config_path):
     LOGGER.info("Selected %s | test F1=%.3f | test AP=%.3f", selected, test_metrics["f1"], test_metrics["average_precision"])
     return report
 
-
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--config", default="configs/default.json")
@@ -79,7 +75,6 @@ def main():
         train(args.config)
     except (ValueError, FileNotFoundError) as exc:
         parser.exit(1, f"Error: {exc}\n")
-
 
 if __name__ == "__main__":
     main()

@@ -4,9 +4,12 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "customer-subscription-prediction"
-version = "0.1.0"
-description = "A learning project for predicting customer subscriptions with scikit-learn"
+version = "1.0.0"
+description = "Leakage-aware bank subscription ranking with temporal validation and scikit-learn"
+readme = "README.md"
+license = {file = "LICENSE"}
 requires-python = ">=3.11"
+keywords = ["machine-learning", "bank-marketing", "scikit-learn", "temporal-validation"]
 dependencies = [
   "numpy>=1.26,<3",
   "pandas>=2.2,<3",
@@ -17,6 +20,20 @@ dependencies = [
 [project.scripts]
 subscription-train = "subscription_prediction.train:main"
 subscription-predict = "subscription_prediction.predict:main"
+subscription-experiment = "subscription_prediction.experiments:main"
+
+[project.urls]
+Repository = "https://github.com/nhbl-ai/customer-subscription-prediction"
+Changelog = "https://github.com/nhbl-ai/customer-subscription-prediction/blob/main/CHANGELOG.md"
+
+[project.optional-dependencies]
+experiments = ["matplotlib>=3.9,<4"]
+eda = [
+  "matplotlib>=3.9,<4",
+  "nbformat>=5.10,<6",
+  "nbclient>=0.10,<1",
+  "ipykernel>=6.29,<8",
+]
 
 [tool.setuptools.packages.find]
 where = ["src"]

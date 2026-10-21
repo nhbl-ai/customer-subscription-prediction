@@ -1,0 +1,28 @@
+{
+  "description": "Aggregate portfolio snapshot; no raw data, row predictions or serialized model.",
+  "dataset": "UCI Bank Marketing / bank-additional-full.csv",
+  "dataset_doi": "https://doi.org/10.24432/C5K306",
+  "dataset_license": "CC BY 4.0",
+  "selection_sha256": "2a1566585032416b517c6203932743520c23ff4139e12a19fcab689257007ee7",
+  "original_validation_report_sha256": "1fcc4de42bb513b4458b2152b0df12b523f5e5332f180a876c2e3d5c1a07279a",
+  "note": "Public metrics.json uses portable config paths, so its hash differs from the frozen original.",
+  "files": {
+    "metrics.json": "5f6f5ead1a703263b2fc261596e1b53649e5e8f73511f83895d02dc807ce4eb7",
+    "test_metrics.json": "0777adfc38a812ed1c9c0f573ac3e96955800815901593667a1565265b53d004",
+    "selection.json": "2a1566585032416b517c6203932743520c23ff4139e12a19fcab689257007ee7",
+    "validation_comparison.csv": "bd14ccae528291ae8527959f93653ed35fc016110cf53110cca53a197a2ef1ef",
+    "cv_folds.csv": "2f326ca3cace658bdfc7dbd676f02d3ba3bc09cdc451429935d0a4be1ff474eb",
+    "cv_results.csv": "8bf81802cc48f9adac6f2f5609232302867bed8795cb298b92e386eef83ebb5c",
+    "calibration_metrics.csv": "444e010849ee58e60904680dad227a383993f017ae0ab11656e7efd01d858be5",
+    "calibration_bins.csv": "bf3340b27145e48952852b18d76095556724efa99c04d01a2a587b235a3ac7fc",
+    "economic_scenarios.csv": "86378c50230159a7fa0dd6f015329a29625abb3a1ab1d000859b085fcac6d663",
+    "threshold_comparison.csv": "4e36ba8f8a78923864986cd9a2dd4dfb01f42ac46d7c4574413856f5931942b4",
+    "permutation_importance.csv": "94470ca96d8ffa98360d980c7a089b86ee5290f9bfcb658d8d72ad515d8e3e2a",
+    "group_errors.csv": "f2a29f031a617377d666717f1ca0f58f8ed4cb76402f884b4399db1893cf5087",
+    "temporal_validation.csv": "558441beddec7aab456d980f4665fb6d9ee6b3caeee7a6e3061fe09bd18b497a",
+    "precision_recall.png": "1b2e235bc3e2efbe0eb820b5c821b4ab5e1f163baada67672d8408b84d81b937",
+    "calibration.png": "d336bd15045a43dec775015fa5551b41bdd79f19c1e3d1db99da96622e57627e",
+    "permutation_importance.png": "9da6a6cc2a3c25ee6446d199ed8c83a5f45ae1dbd362743c3bd98d7b887bae8a",
+    "temporal_validation.png": "1113e290fa37a2e3cbb0e81b2025594b6694aef45b289a56d4d88869cfcbe35d"
+  }
+}
